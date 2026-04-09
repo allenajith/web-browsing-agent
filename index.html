@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Carbon Search</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg-1: #fff4e6;
+      --bg-2: #ffe0b2;
+      --ink: #1f1308;
+      --ink-soft: #4b2f16;
+      --accent: #d83a00;
+      --accent-2: #ff7a18;
+      --card: #fffdf8;
+      --line: rgba(216, 58, 0, 0.2);
+      --shadow: 0 18px 40px rgba(120, 45, 0, 0.16);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Sora", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 10% 15%, rgba(255, 122, 24, 0.28), transparent 38%),
+        radial-gradient(circle at 90% 5%, rgba(216, 58, 0, 0.14), transparent 30%),
+        linear-gradient(160deg, var(--bg-1), var(--bg-2));
+      display: flex;
+      justify-content: center;
+      padding: 56px 16px 40px;
+    }
+
+    .shell {
+      width: min(820px, 100%);
+    }
+
+    .brand {
+      font-family: "Bebas Neue", sans-serif;
+      letter-spacing: 0.06em;
+      font-size: clamp(3rem, 8vw, 5.5rem);
+      line-height: 0.9;
+      margin: 0 0 18px;
+      color: #b62500;
+      text-shadow: 2px 2px 0 #ffd8bf, 6px 6px 0 rgba(0, 0, 0, 0.12);
+      transform: skewX(-8deg);
+      text-align: center;
+    }
+
+    .panel {
+      background: rgba(255, 253, 248, 0.88);
+      border: 1px solid rgba(184, 71, 10, 0.15);
+      border-radius: 24px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(6px);
+    }
+
+    .search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .search-box {
+      width: 100%;
+      border-radius: 999px;
+      border: 1px solid #f2b186;
+      background: #fff;
+      padding: 14px 18px;
+      outline: none;
+      font-size: 16px;
+      font-family: "Sora", sans-serif;
+      color: var(--ink);
+      box-shadow: 0 3px 12px rgba(157, 63, 8, 0.08);
+    }
+
+    .search-box:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 4px rgba(216, 58, 0, 0.16);
+    }
+
+    .search-btn {
+      border: none;
+      border-radius: 999px;
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 700;
+      font-family: "Sora", sans-serif;
+      color: #fff;
+      cursor: pointer;
+      background: linear-gradient(135deg, var(--accent), var(--accent-2));
+      box-shadow: 0 10px 20px rgba(216, 58, 0, 0.28);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 24px rgba(216, 58, 0, 0.34);
+    }
+
+    .search-btn:active {
+      transform: translateY(0);
+    }
+
+    .loader {
+      width: 52px;
+      height: 52px;
+      margin: 28px auto 0;
+      border-radius: 50%;
+      border: 4px solid rgba(216, 58, 0, 0.16);
+      border-top-color: var(--accent);
+      animation: spin 0.9s linear infinite, pulse 1.4s ease-out infinite;
+    }
+
+    #results {
+      margin: 24px 0 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .answer-card {
+      background:
+        radial-gradient(160% 120% at 0% 0%, rgba(255, 122, 24, 0.22), transparent 40%),
+        radial-gradient(120% 120% at 100% 100%, rgba(216, 58, 0, 0.14), transparent 40%),
+        var(--card);
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px 18px 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 30px rgba(84, 35, 6, 0.12);
+      animation: rise 0.45s ease forwards;
+      opacity: 0;
+    }
+
+    .answer-kicker {
+      display: inline-block;
+      font-size: 11px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 800;
+      color: #9f2d00;
+      background: rgba(216, 58, 0, 0.1);
+      border: 1px solid rgba(216, 58, 0, 0.22);
+      border-radius: 999px;
+      padding: 5px 10px;
+      margin-bottom: 10px;
+    }
+
+    .answer-title {
+      margin: 0 0 8px;
+      font-size: clamp(1.2rem, 3vw, 1.55rem);
+      line-height: 1.25;
+      color: var(--ink);
+    }
+
+    .answer-text {
+      margin: 0;
+      color: var(--ink-soft);
+      line-height: 1.8;
+      white-space: pre-wrap;
+      font-size: 15px;
+    }
+
+    .source-heading {
+      margin: 18px 0 12px;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #a53a06;
+      font-weight: 800;
+    }
+
+    .result-item {
+      background: var(--card);
+      border: 1px solid rgba(155, 70, 14, 0.16);
+      border-radius: 14px;
+      padding: 12px 14px;
+      margin-bottom: 10px;
+      animation: rise 0.45s ease forwards;
+      opacity: 0;
+    }
+
+    .result-item a {
+      color: #9d2e00;
+      text-decoration: none;
+      font-weight: 700;
+    }
+
+    .result-item a:hover {
+      text-decoration: underline;
+    }
+
+    .result-link {
+      display: block;
+      margin-top: 5px;
+      color: #6d3d1e;
+      font-size: 12px;
+      word-break: break-all;
+    }
+
+    .empty-state {
+      margin: 10px 0 0;
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px dashed rgba(168, 59, 0, 0.35);
+      background: rgba(255, 255, 255, 0.5);
+      color: #78340d;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(216, 58, 0, 0.35); }
+      80% { box-shadow: 0 0 0 16px rgba(216, 58, 0, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(216, 58, 0, 0); }
+    }
+
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 700px) {
+      body {
+        padding-top: 34px;
+      }
+
+      .panel {
+        padding: 16px;
+        border-radius: 18px;
+      }
+
+      .search-row {
+        grid-template-columns: 1fr;
+      }
+
+      .search-btn {
+        width: 100%;
+      }
+
+      .answer-card {
+        padding: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <h1 class="brand">CARBON</h1>
+
+    <section class="panel">
+      <div class="search-row">
+        <input type="text" id="query" class="search-box" placeholder="Ask anything..." />
+        <button class="search-btn" onclick="search()">Search</button>
+      </div>
+
+      <div id="loader" class="loader" style="display: none;"></div>
+      <ul id="results"></ul>
+    </section>
+  </main>
+
+  <script>
+    function createAnswerCard(answer) {
+      const card = document.createElement("div");
+      card.className = "answer-card";
+      card.style.animationDelay = "0ms";
+
+      const kicker = document.createElement("div");
+      kicker.className = "answer-kicker";
+      kicker.textContent = "AI Response";
+
+      const title = document.createElement("h2");
+      title.className = "answer-title";
+      title.textContent = "Here is what I found";
+
+      const text = document.createElement("p");
+      text.className = "answer-text";
+      text.textContent = answer || "No answer returned.";
+
+      card.appendChild(kicker);
+      card.appendChild(title);
+      card.appendChild(text);
+
+      return card;
+    }
+
+    function createSourceHeading() {
+      const heading = document.createElement("div");
+      heading.className = "source-heading";
+      heading.textContent = "Sources";
+      return heading;
+    }
+
+    function createSourceItem(item, index) {
+      const li = document.createElement("li");
+      li.className = "result-item";
+      li.style.animationDelay = (120 + index * 70) + "ms";
+
+      const link = document.createElement("a");
+      link.href = item.link;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.textContent = item.title || item.link;
+
+      const url = document.createElement("span");
+      url.className = "result-link";
+      url.textContent = item.link || "";
+
+      li.appendChild(link);
+      li.appendChild(url);
+
+      return li;
+    }
+
+    async function search() {
+      const query = document.getElementById("query").value.trim();
+      if (!query) return;
+
+      const list = document.getElementById("results");
+      const loader = document.getElementById("loader");
+
+      list.innerHTML = "";
+      loader.style.display = "block";
+
+      try {
+        const res = await fetch("/search?q=" + encodeURIComponent(query));
+        const data = await res.json();
+
+        loader.style.display = "none";
+
+        const answerCard = createAnswerCard(data.answer);
+        list.appendChild(answerCard);
+
+        const hasSources = Array.isArray(data.sources) && data.sources.length > 0;
+        if (hasSources) {
+          list.appendChild(createSourceHeading());
+          data.sources.forEach((item, index) => {
+            list.appendChild(createSourceItem(item, index));
+          });
+        } else {
+          const empty = document.createElement("div");
+          empty.className = "empty-state";
+          empty.textContent = "No sources available for this response.";
+          list.appendChild(empty);
+        }
+      } catch (error) {
+        loader.style.display = "none";
+        const fail = document.createElement("div");
+        fail.className = "empty-state";
+        fail.textContent = "Search failed. Try again in a moment.";
+        list.appendChild(fail);
+      }
+    }
+  </script>
+</body>
+</html>
