@@ -1,4 +1,6 @@
-**AI-Powered Web Browsing Agent with Safe and Efficient Scraping**
+# AI-Powered Web Browsing Agent
+
+**Browse smarter: AI-powered answers from live web content with Playwright automation.**
 
 A Node.js web-browsing agent that uses Playwright for automated web scraping and Google Gemini AI for generating concise answers from live web content. Users can search queries via a web interface and receive AI-processed responses with source links.
 
