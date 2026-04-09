@@ -6,14 +6,14 @@ A Node.js web-browsing agent that uses Playwright for automated web scraping and
 **Features:**
 - Automated web browsing with Playwright (headless or non-headless).  
 - Scrapes search engines (DuckDuckGo & Bing) for relevant results.  
-- AI-powered summarization using Google Gemini AI (`gemini-2.5-flash-lite`).  
+- AI-powered summarization using Google Gemini AI (gemini-2.5-flash-lite).  
 - Extracts sources: fetches page content while blocking heavy resources, unnecessary scripts and insecure websites. 
 - Secure: disables JS on scraped pages for performance and safety.
 
 
 ## Demo
 
-**Query Example:** `top cars 2025`
+**Query Example:** top cars 2025
 
 **AI Answer:**
 
@@ -68,8 +68,8 @@ Wait a few seconds for AI-processed answers.
 View sources extracted directly from top web pages.
 
 **Notes**
-- The main web interface (`server.js` + frontend) scrapes Bing and uses Google Gemini AI to generate concise answers.  
-- `index.js` is a standalone testing script using DuckDuckGo for quick testing of search scraping and results.  
+- The main web interface (server.js + frontend) scrapes Bing and uses Google Gemini AI to generate concise answers.  
+- index.js is a standalone testing script using DuckDuckGo for quick testing of search scraping and results.  
 - Heavy resources (images, media, fonts, stylesheets) are blocked for faster performance and safety.  
 - JavaScript is disabled on scraped pages to prevent unnecessary scripts and insecure content.  
-- Ensure you have a valid Google Gemini API key in your `.env` file as `GEMINI_API_KEY`.  
+- Ensure you have a valid Google Gemini API key in your .env file as GEMINI_API_KEY.  
